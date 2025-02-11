@@ -175,13 +175,24 @@
 </head>
 <body>
   <div class="container dark-mode">
-    <div class="header">
-      <button id="settingsToggle">
-        <i class="fas fa-cog"></i> Settings
-      </button>
-      <button id="darkModeToggle">
-        <i class="fas fa-moon"></i>
-      </button>
+    <div class="window-header">
+      <div class="drag-handle">
+        <i class="fas fa-grip-lines"></i>
+      </div>
+      <div class="window-controls">
+        <button id="settingsToggle">
+          <i class="fas fa-cog"></i>
+        </button>
+        <button id="darkModeToggle">
+          <i class="fas fa-moon"></i>
+        </button>
+        <button class="minimize">
+          <i class="fas fa-minus"></i>
+        </button>
+        <button class="expand">
+          <i class="fas fa-expand"></i>
+        </button>
+      </div>
     </div>
 
     <div class="settings-panel">
@@ -237,14 +248,22 @@
         <div class="monitor-section">
           <h4>Trend</h4>
           <p id="trendDirection"></p>
+          <p id="trendStrength"></p>
+          <div class="key-levels">
+            <h5>Support Levels</h5>
+            <ul id="supportLevels"></ul>
+            <h5>Resistance Levels</h5>
+            <ul id="resistanceLevels"></ul>
+          </div>
         </div>
         <div class="monitor-section">
           <h4>Active Patterns</h4>
-          <p id="activePatterns"></p>
+          <div id="activePatterns"></div>
         </div>
         <div class="monitor-section">
           <h4>Indicators</h4>
           <div id="indicatorPanel"></div>
+          <p id="overallSentiment"></p>
         </div>
         <div class="monitor-section">
           <h4>Strategy</h4>
@@ -253,13 +272,14 @@
         </div>
         <div class="monitor-section">
           <h4>Risk/Reward</h4>
+          <p id="stopLoss"></p>
+          <p id="takeProfit"></p>
           <p id="riskRewardRatio"></p>
-          <p id="potentialProfit"></p>
-          <p id="potentialLoss"></p>
         </div>
       </div>
     </div>
 
+    <div id="introPanel"></div>
     <div class="chat-container" id="chatContainer">
       <div class="message system-message">
         <strong>AI:</strong> Hello! I'm an AI trading assistant. Let's analyze some charts and spot profitable trading opportunities.
@@ -273,6 +293,11 @@
       <button id="cancelTrade">Cancel</button>
     </div>
 
+    <div class="countdown-timer">
+      <div class="spinner"></div>
+      <p>Next Analysis: <span id="nextAnalysisTime"></span></p>
+      <p id="countdownDisplay"></p>
+    </div>
     <div class="input-container">
       <input type="text" id="userInput" placeholder="Type your message...">
       <button id="sendMessage">Send</button>

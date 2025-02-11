@@ -63,6 +63,22 @@ async function startScreenshotCapture() {
     clearInterval(screenshotInterval);
   }
 
+  let countdown = 10;
+  const nextAnalysis = new Date(Date.now() + countdown * 1000);
+
+  const countdownInterval = setInterval(() => {
+    countdown--;
+    chrome.runtime.sendMessage({
+      type: 'countdownUpdate',
+      countdown,
+      nextAnalysis
+    });
+
+    if (countdown <= 0) {
+      clearInterval(countdownInterval);
+    }
+  }, 1000);
+
   screenshotInterval = setInterval(async () => {
     try {
       const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -70,6 +86,15 @@ async function startScreenshotCapture() {
 
       const screenshot = await chrome.tabs.captureVisibleTab();
       await analyzeScreenshot(screenshot);
+
+      // Reset countdown after analysis
+      countdown = 10;
+      const nextAnalysis = new Date(Date.now() + countdown * 1000);
+      chrome.runtime.sendMessage({
+        type: 'countdownUpdate',
+        countdown,
+        nextAnalysis
+      });
     } catch (error) {
       console.error('Screenshot capture error:', error);
       sendAIResponse(`Error capturing screenshot: ${error.message}`);
@@ -97,34 +122,86 @@ async function analyzeScreenshot(screenshotData) {
     }
 
     const analysisPrompt = {
-      system: `You are an expert trading analyst. Analyze charts with these specific criteria:
-        1. Pattern Recognition:
-          - Identify key chart patterns (Head & Shoulders, Double Tops/Bottoms, etc.)
-          - Detect trend lines and support/resistance levels
-          - Recognize candlestick patterns
-        2. Technical Indicators:
-          - Moving Averages (SMA, EMA)
-          - RSI, MACD, Bollinger Bands
-          - Volume analysis
-        3. Market Context:
-          - Overall trend direction
-          - Market structure
-          - Volume profile
-        4. Risk Assessment:
-          - Potential entry points
-          - Stop loss levels
-          - Take profit targets
-        
-        Provide confidence levels (0-100%) for each prediction.
-        Format response as structured JSON.`,
-      user: `Analyze this chart and provide:
-        1. Primary trend direction
-        2. Key support/resistance levels
-        3. Active chart patterns
-        4. Technical indicator signals
-        5. Recommended trading strategy
-        6. Risk/reward assessment
-        Include confidence levels for each element.`
+      context: {
+        accountInfo: {
+          buyingPower: 10000, // Replace with actual buying power
+          mode: 'paper', // Replace with account mode
+          riskParameters: {
+            // Replace with actual risk parameters
+            account: {
+              maxPositionSize: 1000,
+              maxDrawdown: 10,
+              buyingPower: 10000
+            },
+            trading: {
+              maxLossPerTrade: 2,
+              stopLossPercentage: 2,
+              takeProfitRatio: 2,
+              maxOpenPositions: 5,
+              trailingStopEnabled: true,
+              trailingStopDistance: 1
+            },
+            strategy: {
+              minConfidenceScore: 70,
+              requiredSignals: 2,
+              timeframePreference: ['1h', '4h', '1d'],
+              patternWeight: 0.4,
+              indicatorWeight: 0.6
+            }
+          }
+        },
+        marketContext: 'The market is currently in a bullish trend, with strong momentum and increasing volume.'
+      },
+      requirements: {
+        technicalAnalysis: {
+          patterns: ['Head and Shoulders', 'Double Top', 'Double Bottom', 'Wedge', 'Triangle'],
+          indicators: ['SMA', 'EMA', 'RSI', 'MACD', 'Bollinger Bands', 'Volume'],
+          timeframes: ['1h', '4h', '1d']
+        },
+        riskAssessment: {
+          stopLoss: 2, // Percentage
+          takeProfit: 4, // Percentage
+          confidence: 70 // Minimum confidence score
+        }
+      },
+      outputFormat: {
+        trend: {
+          direction: 'string',
+          strength: 'number',
+          key_levels: {
+            support: ['array of numbers'],
+            resistance: ['array of numbers']
+          }
+        },
+        patterns: [
+          {
+            name: 'string',
+            status: 'forming/confirmed/broken',
+            confidence: 'number',
+            target_price: 'number'
+          }
+        ],
+        signals: {
+          overall_sentiment: 'number',
+          indicators: [
+            {
+              name: 'string',
+              value: 'number',
+              signal: 'buy/sell/neutral',
+              weight: 'number'
+            }
+          ]
+        },
+        strategy: {
+          name: 'string',
+          confidence: 'number'
+        },
+        risk_assessment: {
+          stop_loss: 'number',
+          take_profit: 'number',
+          risk_reward_ratio: 'number'
+        }
+      }
     };
 
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {

@@ -156,21 +156,80 @@ document.addEventListener('DOMContentLoaded', () => {
       scanLine.addEventListener('animationend', () => {
         previewPanel.classList.remove('scanning');
       });
-    } else if (message.type === 'aiResponse') {
+    } else if (message.type === 'aiAnalysis') {
       const analysisData = message.data;
       updateStrategyMonitor(analysisData);
       addMessage('AI', JSON.stringify(analysisData, null, 2), true);
     } else if (message.type === 'strategyUpdate') {
       updateStrategyMonitor(message.details);
+    } else if (message.type === 'countdownUpdate') {
+      updateCountdownTimer(message.countdown, message.nextAnalysis);
     }
   });
 
   // Toggle settings panel
-    settingsToggle.addEventListener('click', () => {
-      settingsPanel.classList.toggle('open');
-      settingsToggle.querySelector('i').classList.toggle('fa-chevron-down');
-      settingsToggle.querySelector('i').classList.toggle('fa-chevron-up');
-    });
+    const windowToggle = {
+      settingsToggle: document.getElementById('settingsToggle'),
+      settingsPanel: document.querySelector('.settings-panel'),
+      minimizeButton: document.querySelector('.minimize'),
+      expandButton: document.querySelector('.expand'),
+      isWindowMinimized: false,
+
+      init() {
+        this.settingsToggle.addEventListener('click', () => {
+          this.settingsPanel.classList.toggle('open');
+          this.settingsToggle.querySelector('i').classList.toggle('fa-chevron-down');
+          this.settingsToggle.querySelector('i').classList.toggle('fa-chevron-up');
+        });
+
+        this.minimizeButton.addEventListener('click', () => {
+          this.isWindowMinimized = true;
+          document.body.style.width = '48px';
+          document.body.style.height = '48px';
+          document.body.style.borderRadius = '50%';
+          document.body.style.overflow = 'hidden';
+        });
+
+        this.expandButton.addEventListener('click', () => {
+          this.isWindowMinimized = false;
+          document.body.style.width = '400px';
+          document.body.style.height = 'auto';
+          document.body.style.borderRadius = '8px';
+          document.body.style.overflow = 'auto';
+        });
+      }
+    };
+
+    windowToggle.init();
+
+  const windowPosition = {
+    savePosition() {
+      const windowRect = document.body.getBoundingClientRect();
+      chrome.storage.local.set({
+        windowPosition: {
+          left: windowRect.left,
+          top: windowRect.top,
+          width: windowRect.width,
+          height: windowRect.height
+        }
+      });
+    },
+
+    loadPosition() {
+      chrome.storage.local.get('windowPosition', (data) => {
+        if (data.windowPosition) {
+          const { left, top, width, height } = data.windowPosition;
+          document.body.style.left = `${left}px`;
+          document.body.style.top = `${top}px`;
+          document.body.style.width = `${width}px`;
+          document.body.style.height = `${height}px`;
+        }
+      });
+    }
+  };
+
+  window.addEventListener('beforeunload', windowPosition.savePosition);
+  windowPosition.loadPosition();
 
   // Toggle dark mode
   darkModeToggle.addEventListener('click', () => {
@@ -180,11 +239,19 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-function addMessage(sender, content) {
+function addMessage(sender, content, isJson = false) {
   const chatContainer = document.getElementById('chatContainer');
   const messageDiv = document.createElement('div');
   messageDiv.className = `message ${sender.toLowerCase()}-message`;
-  messageDiv.textContent = `${sender}: ${content}`;
+  if (isJson) {
+    const pre = document.createElement('pre');
+    pre.textContent = content;
+    messageDiv.appendChild(pre);
+  } else {
+    const contentSpan = document.createElement('span');
+    contentSpan.textContent = content;
+    messageDiv.appendChild(contentSpan);
+  }
   chatContainer.appendChild(messageDiv);
   chatContainer.scrollTop = chatContainer.scrollHeight;
 }
@@ -208,14 +275,92 @@ function showTradeConfirmation(strategy) {
   });
 }
 
-function showStrategyDirection(details) {
-  const strategyDetails = document.getElementById('strategyDetails');
-  strategyDetails.innerHTML = '';
+function updateStrategyMonitor(data) {
+  const trendDisplay = document.getElementById('trendDirection');
+  const trendStrength = document.getElementById('trendStrength');
+  const supportLevels = document.getElementById('supportLevels');
+  const resistanceLevels = document.getElementById('resistanceLevels');
+  const patternDisplay = document.getElementById('activePatterns');
+  const indicatorPanel = document.getElementById('indicatorPanel');
+  const overallSentiment = document.getElementById('overallSentiment');
+  const strategyName = document.getElementById('strategyName');
+  const confidenceMeter = document.getElementById('confidenceMeter');
+  const stopLoss = document.getElementById('stopLoss');
+  const takeProfit = document.getElementById('takeProfit');
+  const riskRewardRatio = document.getElementById('riskRewardRatio');
 
-  const strategyDiv = document.createElement('div');
-  strategyDiv.className = 'strategy-details';
-  strategyDiv.textContent = `${details.strategy} (${details.confidence}% confidence)`;
-  strategyDetails.appendChild(strategyDiv);
+  // Update trend information
+  trendDisplay.textContent = `Direction: ${data.trend.direction}`;
+  trendStrength.textContent = `Strength: ${data.trend.strength}%`;
+
+  // Update support/resistance levels
+  supportLevels.innerHTML = '';
+  data.trend.key_levels.support.forEach(level => {
+    const li = document.createElement('li');
+    li.textContent = level.toFixed(2);
+    supportLevels.appendChild(li);
+  });
+
+  resistanceLevels.innerHTML = '';
+  data.trend.key_levels.resistance.forEach(level => {
+    const li = document.createElement('li');
+    li.textContent = level.toFixed(2);
+    resistanceLevels.appendChild(li);
+  });
+
+  // Update patterns
+  patternDisplay.innerHTML = '';
+  data.patterns.forEach(pattern => {
+    const div = document.createElement('div');
+    div.className = `pattern-item ${pattern.status.toLowerCase()}`;
+    div.innerHTML = `
+      <span class="pattern-name">${pattern.name}</span>
+      <span class="pattern-status">${pattern.status}</span>
+      <span class="pattern-confidence">${pattern.confidence}%</span>
+      <span class="pattern-target">Target: ${pattern.target_price}</span>
+    `;
+    patternDisplay.appendChild(div);
+  });
+
+  // Update indicators
+  indicatorPanel.innerHTML = '';
+  data.signals.indicators.forEach(indicator => {
+    const div = document.createElement('div');
+    div.className = `indicator-item ${indicator.signal.toLowerCase()}`;
+    div.innerHTML = `
+      <span class="indicator-name">${indicator.name}</span>
+      <span class="indicator-value">${indicator.value}</span>
+      <span class="indicator-signal">${indicator.signal}</span>
+      <span class="indicator-weight">${indicator.weight}%</span>
+    `;
+    indicatorPanel.appendChild(div);
+  });
+
+  overallSentiment.textContent = `Overall Sentiment: ${data.signals.overall_sentiment}%`;
+
+  // Update strategy
+  strategyName.textContent = data.strategy.name;
+  confidenceMeter.textContent = `Confidence: ${data.strategy.confidence}%`;
+
+  // Update risk/reward
+  stopLoss.textContent = `Stop Loss: ${data.risk_assessment.stop_loss}%`;
+  takeProfit.textContent = `Take Profit: ${data.risk_assessment.take_profit}%`;
+  riskRewardRatio.textContent = `Risk/Reward: ${data.risk_assessment.risk_reward_ratio.toFixed(2)}`;
+
+  // Add sentiment-based gradient overlay
+  const container = document.querySelector('.container');
+  const sentiment = data.signals.overall_sentiment;
+  const color = sentiment >= 50 ? 'rgba(16, 185, 129, ' : 'rgba(239, 68, 68, ';
+  const opacity = Math.abs(sentiment - 50) / 100;
+  container.style.background = `linear-gradient(to bottom, ${color}${opacity * 0.2}) 0%, transparent 100%)`;
+}
+
+function updateCountdownTimer(countdown, nextAnalysis) {
+  const countdownDisplay = document.getElementById('countdownDisplay');
+  const nextAnalysisTime = document.getElementById('nextAnalysisTime');
+  
+  countdownDisplay.textContent = `${countdown} seconds`;
+  nextAnalysisTime.textContent = new Date(nextAnalysis).toLocaleTimeString();
 }
 
 function renderTradeHistory(history) {
