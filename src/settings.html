@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Settings</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background-color: #f3f4f6;
+      color: #1f2937;
+      padding: 16px;
+    }
+
+    .dark-mode {
+      background-color: #1f2937;
+      color: #e5e7eb;
+    }
+
+    .settings-panel {
+      background-color: #fff;
+      border-radius: 8px;
+      padding: 16px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .dark-mode .settings-panel {
+      background-color: #374151; 
+    }
+    .dark-mode .settings-panel {
+      background-color: #374151;
+    }
+
+    .setting {
+      display: flex;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .setting i {
+      margin-right: 8px;
+    }
+
+    .setting label {
+      font-weight: bold;
+      margin-right: 8px;
+    }
+
+    .setting input {
+      padding: 8px;
+      border: 1px solid #e5e7eb;
+      border-radius: 4px;
+    }
+
+    .dark-mode .setting input {
+      background-color: #374151;
+      color: #e5e7eb;
+      border-color: #4b5563;
+    }
+
+    .setting button {
+      padding: 8px 16px;
+      background-color: #2563eb;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .setting button:hover {
+      background-color: #1d4ed8;
+    }
+  </style>
+</head>
+<body>
+  <div class="settings-panel">
+    <div class="setting">
+      <i class="fas fa-key"></i>
+      <div>
+        <label for="apiKey">OpenRouter API Key:</label>
+        <input type="password" id="apiKey" placeholder="Enter your API key">
+        <button id="saveApiKey">Save</button>
+      </div>
+    </div>
+    <div class="setting">
+      <i class="fas fa-robot"></i>
+      <div>
+        <label for="modelSelect">Model:</label>
+        <select id="modelSelect">
+          <option value="openai/gpt-4">GPT-4</option>
+          <option value="openai/gpt-4-vision-preview">GPT-4 Vision</option>
+        </select>
+      </div>
+    </div>
+    <div class="setting">
+      <i class="fas fa-chart-line"></i>
+      <div>
+        <label for="alpacaKey">Alpaca API Key:</label>
+        <input type="password" id="alpacaKey" placeholder="Enter Alpaca API key">
+        <button id="saveAlpacaKey">Save</button>
+      </div>
+      <div>
+        <label for="alpacaSecret">Alpaca Secret Key:</label>
+        <input type="password" id="alpacaSecret" placeholder="Enter Alpaca secret key">
+      </div>
+    </div>
+  </div>
+</body>
+</html>

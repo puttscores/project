@@ -1,0 +1,227 @@
+body {
+  width: 400px;
+  padding: 16px;
+  font-family: system-ui, -apple-system, sans-serif;
+  margin: 0;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.header {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.status-panel {
+  padding: 12px;
+  border-radius: 8px;
+  background: #f3f4f6;
+}
+
+.chat-container {
+  height: 300px;
+  overflow-y: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.message {
+  margin-bottom: 8px;
+  padding: 8px;
+  border-radius: 6px;
+}
+
+.ai-message {
+  background: #f3f4f6;
+}
+
+.user-message {
+  background: #dbeafe;
+  margin-left: 20px;
+}
+
+.system-message {
+  background: #fef3c7;
+}
+
+.input-container {
+  display: flex;
+  gap: 8px;
+}
+
+input, select {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+}
+
+button {
+  padding: 8px 16px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #1d4ed8;
+}
+
+button.stop {
+  background: #dc2626;
+}
+
+button.stop:hover {
+  background: #b91c1c;
+}
+
+    .settings-panel {
+      padding: 12px;
+      background: #2a3449;
+      border-radius: 8px;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease;
+    }
+    .settings-panel.open {
+      max-height: 600px; /* Adjust as needed */
+    }
+
+.settings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.settings-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.setting {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+    .preview-panel {
+      padding: 16px;
+      background: #2a3449;
+      border-radius: 12px;
+      border: 1px solid #3a4459;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      position: relative;
+    }
+
+    .preview-panel .preview-image {
+      max-width: 100%;
+      border-radius: 8px;
+      border: 1px solid #4b5563;
+    }
+    .preview-panel .preview-timestamp {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: rgba(0,0,0,0.5);
+      color: #fff;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+
+    .strategy-monitor {
+      padding: 16px;
+      background: #2a3449;
+      border-radius: 12px;
+      border: 1px solid #3a4459;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .monitor-panel {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    .monitor-section {
+      background: #374151;
+      padding: 12px;
+      border-radius: 8px;
+    }
+    .monitor-section h4 {
+      margin-top: 0;
+    }
+
+.trade-confirmation {
+  padding: 12px;
+  background: #f3f4f6;
+  border-radius: 8px;
+  margin-top: 16px;
+}
+
+.trade-history {
+  padding: 12px;
+  background: #f3f4f6;
+  border-radius: 8px;
+  margin-top: 16px;
+}
+
+.trade-entry {
+  padding: 8px;
+  background: white;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+/* Dark Mode Styles */
+.dark-mode {
+  background-color: #1f2937;
+  color: #e5e7eb;
+}
+
+.dark-mode .status-panel,
+.dark-mode .settings-panel,
+.dark-mode .preview-panel,
+.dark-mode .chat-container,
+.dark-mode .trade-confirmation,
+.dark-mode .trade-history,
+.dark-mode .strategy-monitor {
+  background-color: #374151;
+  border-color: #4b5563;
+}
+
+.dark-mode .message {
+  background-color: #4b5563;
+}
+
+.dark-mode .user-message {
+  background-color: #6b7280;
+}
+
+.dark-mode .system-message {
+  background-color: #4a5568;
+}
+
+.dark-mode input,
+.dark-mode select,
+.dark-mode button {
+  background-color: #374151;
+  color: #e5e7eb;
+  border-color: #4b5563;
+}
+
+.dark-mode button:hover {
+  background-color: #4b5563;
+}
+
+.dark-mode .trade-entry {
+  background-color: #4b5563;
+}

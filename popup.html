@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AI Trading Assistant</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    body {
+      width: 400px;
+      padding: 16px;
+      font-family: system-ui, -apple-system, sans-serif;
+      margin: 0;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .header {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+    .status-panel {
+      padding: 12px;
+      border-radius: 8px;
+      background: #f3f4f6;
+    }
+    .chat-container {
+      height: 300px;
+      overflow-y: auto;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 12px;
+    }
+    .message {
+      margin-bottom: 8px;
+      padding: 8px;
+      border-radius: 6px;
+    }
+    .ai-message {
+      background: #f3f4f6;
+    }
+    .user-message {
+      background: #dbeafe;
+      margin-left: 20px;
+    }
+    .system-message {
+      background: #fef3c7;
+    }
+    .input-container {
+      display: flex;
+      gap: 8px;
+    }
+    input, select {
+      flex: 1;
+      padding: 8px;
+      border: 1px solid #e5e7eb;
+      border-radius: 4px;
+    }
+    button {
+      padding: 8px 16px;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #1d4ed8;
+    }
+    button.stop {
+      background: #dc2626;
+    }
+    button.stop:hover {
+      background: #b91c1c;
+    }
+    .settings-panel {
+      padding: 12px;
+      background: #f3f4f6;
+      border-radius: 8px;
+      display: none;
+    }
+    .settings-panel.open {
+      display: block;
+    }
+    .settings-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .settings-content {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .setting {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .preview-panel {
+      padding: 12px;
+      background: #f3f4f6;
+      border-radius: 8px;
+    }
+    .preview-panel img {
+      max-width: 100%;
+      border-radius: 4px;
+    }
+    .strategy-monitor {
+      padding: 12px;
+      background: #f3f4f6;
+      border-radius: 8px;
+    }
+    .trade-confirmation {
+      padding: 12px;
+      background: #f3f4f6;
+      border-radius: 8px;
+      margin-top: 16px;
+    }
+    .trade-history {
+      padding: 12px;
+      background: #f3f4f6;
+      border-radius: 8px;
+      margin-top: 16px;
+    }
+    .trade-entry {
+      padding: 8px;
+      background: white;
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+  </style>
+
+  <style>
+    /* Dark Mode Styles */
+    .dark-mode {
+      background-color: #1f2937;
+      color: #e5e7eb;
+    }
+    .dark-mode .status-panel,
+    .dark-mode .settings-panel,
+    .dark-mode .preview-panel,
+    .dark-mode .chat-container,
+    .dark-mode .trade-confirmation,
+    .dark-mode .trade-history,
+    .dark-mode .strategy-monitor {
+      background-color: #374151;
+      border-color: #4b5563;
+    }
+    .dark-mode .message {
+      background-color: #4b5563;
+    }
+    .dark-mode .user-message {
+      background-color: #6b7280;
+    }
+    .dark-mode .system-message {
+      background-color: #4a5568;
+    }
+    .dark-mode input,
+    .dark-mode select,
+    .dark-mode button {
+      background-color: #374151;
+      color: #e5e7eb;
+      border-color: #4b5563;
+    }
+    .dark-mode button:hover {
+      background-color: #4b5563;
+    }
+    .dark-mode .trade-entry {
+      background-color: #4b5563;
+    }
+  </style>
+</head>
+<body>
+  <div class="container dark-mode">
+    <div class="header">
+      <button id="settingsToggle">
+        <i class="fas fa-cog"></i> Settings
+      </button>
+      <button id="darkModeToggle">
+        <i class="fas fa-moon"></i>
+      </button>
+    </div>
+
+    <div class="settings-panel">
+      <div class="settings-content">
+        <div class="setting">
+          <label for="apiKey">OpenRouter API Key:</label>
+          <input type="password" id="apiKey" placeholder="Enter your API key">
+          <button id="saveApiKey">Save API Key</button>
+        </div>
+        <div class="setting">
+          <label for="modelSelect">Model:</label>
+          <select id="modelSelect">
+            <option value="openai/gpt-4">GPT-4</option>
+            <option value="openai/gpt-4-vision-preview">GPT-4 Vision</option>
+            <option value="openai/qwen-vision">Qwen Vision</option>
+            <option value="openai/qwen-vision-preview">Qwen Vision Preview</option>
+            <option value="openai/qwen-vision-v2">Qwen Vision V2</option>
+            <option value="openai/qwen-vision-v3">Qwen Vision V3</option>
+            <option value="openai/qwen-vision-v4">Qwen Vision V4</option>
+            <option value="openai/qwen-vision-v5">Qwen Vision V5</option>
+          </select>
+        </div>
+        <div class="setting">
+          <label for="alpacaKey">Alpaca API Key:</label>
+          <input type="password" id="alpacaKey" placeholder="Enter Alpaca API key">
+          <label for="alpacaSecret">Alpaca Secret Key:</label>
+          <input type="password" id="alpacaSecret" placeholder="Enter Alpaca secret key">
+          <button id="saveAlpacaKey">Save Alpaca Keys</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="status-panel">
+      <h3>Analysis Status</h3>
+      <p id="status">Stopped</p>
+      <button id="toggleAnalysis">Start Analysis</button>
+      <p id="tokenCost">Token Cost: $0.00</p>
+    </div>
+
+    <div class="preview-panel">
+      <h3>Screenshot Preview</h3>
+      <div id="previewContainer" class="preview-panel">
+        <img class="preview-image" src="" alt="Screenshot Preview">
+        <div class="preview-timestamp"></div>
+        <div class="scan-line"></div>
+        <p class="scan-status">Scanning...</p>
+      </div>
+    </div>
+
+    <div class="strategy-monitor">
+      <h3>Strategy Monitor</h3>
+      <div class="monitor-panel">
+        <div class="monitor-section">
+          <h4>Trend</h4>
+          <p id="trendDirection"></p>
+        </div>
+        <div class="monitor-section">
+          <h4>Active Patterns</h4>
+          <p id="activePatterns"></p>
+        </div>
+        <div class="monitor-section">
+          <h4>Indicators</h4>
+          <div id="indicatorPanel"></div>
+        </div>
+        <div class="monitor-section">
+          <h4>Strategy</h4>
+          <p id="strategyName"></p>
+          <p id="confidenceMeter"></p>
+        </div>
+        <div class="monitor-section">
+          <h4>Risk/Reward</h4>
+          <p id="riskRewardRatio"></p>
+          <p id="potentialProfit"></p>
+          <p id="potentialLoss"></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-container" id="chatContainer">
+      <div class="message system-message">
+        <strong>AI:</strong> Hello! I'm an AI trading assistant. Let's analyze some charts and spot profitable trading opportunities.
+      </div>
+    </div>
+
+    <div class="trade-confirmation" id="tradeConfirmation" style="display: none;">
+      <h3>Confirm Trade Strategy</h3>
+      <p id="tradeStrategyDetails"></p>
+      <button id="confirmTrade">Execute Trade</button>
+      <button id="cancelTrade">Cancel</button>
+    </div>
+
+    <div class="input-container">
+      <input type="text" id="userInput" placeholder="Type your message...">
+      <button id="sendMessage">Send</button>
+    </div>
+
+    <div class="trade-history">
+      <h3>Trade History</h3>
+      <div id="tradeHistoryLog"></div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
