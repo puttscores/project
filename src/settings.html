@@ -3,113 +3,671 @@
 <head>
   <meta charset="UTF-8">
   <title>Settings</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
+    :root {
+      --bg-primary: #0a0c10;
+      --bg-secondary: #141820;
+      --bg-tertiary: #1c2028;
+      --accent-primary: #4f6ef7;
+      --accent-success: #22c55e;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --border-color: rgba(255, 255, 255, 0.06);
+      --shadow-color: rgba(0, 0, 0, 0.4);
+      --gradient-primary: linear-gradient(145deg, var(--bg-secondary), var(--bg-tertiary));
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
-      font-family: system-ui, -apple-system, sans-serif;
-      background-color: #f3f4f6;
-      color: #1f2937;
-      padding: 16px;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      letter-spacing: -0.011em;
+      padding: 20px;
     }
 
-    .dark-mode {
-      background-color: #1f2937;
-      color: #e5e7eb;
+    .settings-section {
+      margin-bottom: 24px;
     }
 
-    .settings-panel {
-      background-color: #fff;
-      border-radius: 8px;
-      padding: 16px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    .settings-section h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
     }
 
-    .dark-mode .settings-panel {
-      background-color: #374151; 
-    }
-    .dark-mode .settings-panel {
-      background-color: #374151;
-    }
-
-    .setting {
-      display: flex;
-      align-items: center;
+    .input-field {
       margin-bottom: 16px;
     }
 
-    .setting i {
-      margin-right: 8px;
+    .input-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 8px;
     }
 
-    .setting label {
-      font-weight: bold;
-      margin-right: 8px;
+    .input-wrapper {
+      position: relative;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow: hidden;
     }
 
-    .setting input {
-      padding: 8px;
-      border: 1px solid #e5e7eb;
-      border-radius: 4px;
+    .input-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+      font-size: 14px;
     }
 
-    .dark-mode .setting input {
-      background-color: #374151;
-      color: #e5e7eb;
-      border-color: #4b5563;
-    }
-
-    .setting button {
-      padding: 8px 16px;
-      background-color: #2563eb;
-      color: #fff;
+    input, select {
+      width: 100%;
+      padding: 14px 16px 14px 44px;
+      background: transparent;
       border: none;
-      border-radius: 4px;
-      cursor: pointer;
+      color: var(--text-primary);
+      font-size: 14px;
+      font-family: inherit;
     }
 
-    .setting button:hover {
-      background-color: #1d4ed8;
+    input:focus, select:focus {
+      outline: none;
+    }
+
+    select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      background-size: 16px;
+      padding-right: 44px;
+    }
+
+    select option {
+      background-color: var(--bg-tertiary);
+      color: var(--text-primary);
+      padding: 8px;
+    }
+
+    .toggle-visibility {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .setting-toggle {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .toggle-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .toggle-icon {
+      color: var(--text-secondary);
+      font-size: 16px;
+    }
+
+    .toggle-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .toggle-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .toggle-description {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--bg-secondary);
+      transition: .4s;
+      border-radius: 24px;
+    }
+
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .toggle-slider {
+      background-color: var(--accent-success);
+    }
+
+    input:checked + .toggle-slider:before {
+      transform: translateX(20px);
+    }
+
+    input:disabled + .toggle-slider {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .cost-estimation {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .cost-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+
+    .cost-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .cost-label {
+      color: var(--text-secondary);
+    }
+
+    .cost-value {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .save-button {
+      width: 100%;
+      padding: 14px;
+      background: var(--accent-success);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 24px;
+      transition: all 0.2s ease;
+    }
+
+    .save-button:hover {
+      opacity: 0.9;
+    }
+
+    .save-button:active {
+      transform: translateY(1px);
+    }
+
+    .save-button.saving {
+      opacity: 0.7;
+      cursor: wait;
+    }
+
+    .account-info {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 16px;
+      margin-bottom: 24px;
+    }
+
+    .account-info h3 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--text-primary);
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+
+    .info-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .info-label {
+      color: var(--text-secondary);
+    }
+
+    .info-value {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+  <style>
+    .input-description {
+      display: block;
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin: 4px 0 8px;
+      line-height: 1.4;
     }
   </style>
 </head>
 <body>
-  <div class="settings-panel">
-    <div class="setting">
-      <i class="fas fa-key"></i>
-      <div>
-        <label for="apiKey">OpenRouter API Key:</label>
-        <input type="password" id="apiKey" placeholder="Enter your API key">
-        <button id="saveApiKey">Save</button>
+  <!-- API Keys Section -->
+  <div class="settings-section">
+    <h3>API Keys</h3>
+    <div class="input-field">
+      <label class="input-label">OpenRouter API Key</label>
+      <div class="input-wrapper">
+        <i class="fas fa-key input-icon"></i>
+        <input 
+          type="password" 
+          id="openrouterKey" 
+          placeholder="Enter your OpenRouter API key"
+          autocomplete="off"
+        >
+        <button class="toggle-visibility" type="button">
+          <i class="fas fa-eye"></i>
+        </button>
       </div>
     </div>
-    <div class="setting">
-      <i class="fas fa-robot"></i>
-      <div>
-        <label for="modelSelect">Model:</label>
-        <select id="modelSelect">
-          <option value="openai/gpt-4">GPT-4</option>
-          <option value="openai/gpt-4-vision-preview">GPT-4 Vision</option>
-        </select>
+
+    <div class="input-field">
+      <label class="input-label">Alpaca API Key</label>
+      <div class="input-wrapper">
+        <i class="fas fa-chart-line input-icon"></i>
+        <input 
+          type="password" 
+          id="alpacaKey" 
+          placeholder="Enter your Alpaca API key"
+          autocomplete="off"
+        >
+        <button class="toggle-visibility" type="button">
+          <i class="fas fa-eye"></i>
+        </button>
       </div>
     </div>
-    <div class="setting">
-      <i class="fas fa-chart-line"></i>
-      <div>
-        <label for="alpacaKey">Alpaca API Key:</label>
-        <input type="password" id="alpacaKey" placeholder="Enter Alpaca API key">
-        <button id="saveAlpacaKey">Save</button>
-      </div>
-      <div>
-        <label for="alpacaSecret">Alpaca Secret Key:</label>
-        <input type="password" id="alpacaSecret" placeholder="Enter Alpaca secret key">
-      </div>
-    </div>
-    <div class="setting">
-      <i class="fas fa-shield-alt"></i>
-      <div>
-        <label for="riskManagement">Risk Management:</label>
-        <button id="editRiskManagement">Edit</button>
+
+    <div class="input-field">
+      <label class="input-label">Alpaca Secret Key</label>
+      <div class="input-wrapper">
+        <i class="fas fa-lock input-icon"></i>
+        <input 
+          type="password" 
+          id="alpacaSecret" 
+          placeholder="Enter your Alpaca secret key"
+          autocomplete="off"
+        >
+        <button class="toggle-visibility" type="button">
+          <i class="fas fa-eye"></i>
+        </button>
       </div>
     </div>
   </div>
+
+  <!-- Trading Settings Section -->
+  <div class="settings-section">
+    <h3>Trading Settings</h3>
+    
+    <div class="input-field">
+      <label class="input-label">AI Model</label>
+      <div class="input-wrapper">
+        <i class="fas fa-robot input-icon"></i>
+        <select id="modelSelect">
+          <option value="meta-llama/llama-3.2-11b-vision-instruct">Llama 3.2 11B Vision ($0.055/M tokens)</option>
+          <option value="google/gemini-pro-vision">Gemini Pro Vision ($0.5/M input, $1.5/M output)</option>
+          <option value="meta-llama/llama-3.2-90b-vision-instruct">Llama 3.2 90B Vision ($0.8/M input, $1.6/M output)</option>
+          <option value="qwen/qwen2.5-vl-72b-instruct">Qwen 2.5 72B Vision (Free)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="input-field">
+      <label class="input-label">Analysis Interval</label>
+      <div class="input-wrapper">
+        <i class="fas fa-clock input-icon"></i>
+        <select id="analysisInterval">
+          <option value="1">Every 1 second</option>
+          <option value="5">Every 5 seconds</option>
+          <option value="10">Every 10 seconds</option>
+          <option value="30">Every 30 seconds</option>
+          <option value="60">Every 1 minute</option>
+          <option value="180">Every 3 minutes</option>
+          <option value="300">Every 5 minutes</option>
+          <option value="600">Every 10 minutes</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="setting-toggle">
+      <div class="toggle-header">
+        <i class="fas fa-robot toggle-icon"></i>
+        <div class="toggle-info">
+          <span class="toggle-label">Auto-Trading</span>
+          <span class="toggle-description">Execute trades when confidence is above 70%</span>
+        </div>
+      </div>
+      <label class="toggle-switch">
+        <input type="checkbox" id="autoTrading" disabled>
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+
+    <div class="cost-estimation">
+      <div class="cost-row">
+        <span class="cost-label">Tokens per Analysis:</span>
+        <span class="cost-value" id="tokenCount">0</span>
+      </div>
+      <div class="cost-row">
+        <span class="cost-label">Cost per Analysis:</span>
+        <span class="cost-value" id="costPerAnalysis">$0.00</span>
+      </div>
+      <div class="cost-row">
+        <span class="cost-label">Estimated Hourly Cost:</span>
+        <span class="cost-value" id="hourlyCost">$0.00</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Risk Parameters Section -->
+  <div class="settings-section">
+    <h3>Risk Parameters</h3>
+    
+    <!-- Account Settings -->
+    <div class="input-field">
+      <label class="input-label">Trading Mode</label>
+      <span class="input-description">Choose between paper trading (practice with virtual money) or live trading with real funds</span>
+      <div class="input-wrapper">
+        <i class="fas fa-wallet input-icon"></i>
+        <select id="tradingMode">
+          <option value="paper">Paper Trading</option>
+          <option value="live">Live Trading</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="input-field">
+      <label class="input-label">Max Position Size ($)</label>
+      <span class="input-description">The maximum amount of money to invest in a single trade</span>
+      <div class="input-wrapper">
+        <i class="fas fa-dollar-sign input-icon"></i>
+        <input 
+          type="number" 
+          id="maxPositionSize" 
+          min="0"
+          value="1000"
+        >
+      </div>
+    </div>
+
+    <div class="input-field">
+      <label class="input-label">Max Drawdown (%)</label>
+      <span class="input-description">Maximum allowed loss from your peak account balance before trading is paused</span>
+      <div class="input-wrapper">
+        <i class="fas fa-chart-line input-icon"></i>
+        <input 
+          type="number" 
+          id="maxDrawdown" 
+          min="0"
+          max="100"
+          value="10"
+        >
+      </div>
+    </div>
+
+    <div class="input-field">
+      <label class="input-label">Buying Power ($)</label>
+      <span class="input-description">Total amount of money available for trading</span>
+      <div class="input-wrapper">
+        <i class="fas fa-coins input-icon"></i>
+        <input 
+          type="number" 
+          id="buyingPower" 
+          min="0"
+          value="10000"
+        >
+      </div>
+    </div>
+
+    <!-- Trading Rules -->
+    <div class="input-field">
+      <label class="input-label">Max Loss Per Trade (%)</label>
+      <span class="input-description">Maximum percentage of your account you're willing to risk on a single trade</span>
+      <div class="input-wrapper">
+        <i class="fas fa-exclamation-triangle input-icon"></i>
+        <input 
+          type="number" 
+          id="maxLossPerTrade" 
+          min="0"
+          max="100"
+          step="0.1"
+          value="2"
+        >
+      </div>
+    </div>
+
+    <div class="input-field">
+      <label class="input-label">Stop Loss (%)</label>
+      <span class="input-description">Price level at which the trade will automatically close to prevent further losses</span>
+      <div class="input-wrapper">
+        <i class="fas fa-hand-paper input-icon"></i>
+        <input 
+          type="number" 
+          id="stopLossPercentage" 
+          min="0"
+          max="100"
+          step="0.1"
+          value="2"
+        >
+      </div>
+    </div>
+
+    <div class="input-field">
+      <label class="input-label">Take Profit Ratio</label>
+      <span class="input-description">Profit target relative to your stop loss (e.g., 2 means target profit is twice the stop loss)</span>
+      <div class="input-wrapper">
+        <i class="fas fa-chart-bar input-icon"></i>
+        <input 
+          type="number" 
+          id="takeProfitRatio" 
+          min="0"
+          step="0.1"
+          value="2"
+        >
+      </div>
+    </div>
+
+    <div class="input-field">
+      <label class="input-label">Max Open Positions</label>
+      <span class="input-description">Maximum number of trades that can be active at the same time</span>
+      <div class="input-wrapper">
+        <i class="fas fa-layer-group input-icon"></i>
+        <input 
+          type="number" 
+          id="maxOpenPositions" 
+          min="1"
+          value="5"
+        >
+      </div>
+    </div>
+
+    <div class="setting-toggle">
+      <div class="toggle-header">
+        <i class="fas fa-route toggle-icon"></i>
+        <div class="toggle-info">
+          <span class="toggle-label">Trailing Stop</span>
+          <span class="toggle-description">Automatically adjust stop loss as price moves in your favor</span>
+        </div>
+      </div>
+      <label class="toggle-switch">
+        <input type="checkbox" id="trailingStopEnabled" checked>
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+
+    <div class="input-field" id="trailingStopDistanceField">
+      <label class="input-label">Trailing Stop Distance (%)</label>
+      <span class="input-description">How far the trailing stop follows the price - smaller values track price more closely</span>
+      <div class="input-wrapper">
+        <i class="fas fa-arrows-alt-v input-icon"></i>
+        <input 
+          type="number" 
+          id="trailingStopDistance" 
+          min="0"
+          step="0.1"
+          value="1"
+        >
+      </div>
+    </div>
+
+    <!-- Strategy Parameters -->
+    <div class="input-field">
+      <label class="input-label">Minimum Confidence Score (%)</label>
+      <span class="input-description">Minimum AI confidence level required before considering a trade</span>
+      <div class="input-wrapper">
+        <i class="fas fa-percentage input-icon"></i>
+        <input 
+          type="number" 
+          id="minConfidenceScore" 
+          min="0"
+          max="100"
+          value="70"
+        >
+      </div>
+    </div>
+
+    <div class="input-field">
+      <label class="input-label">Required Signals</label>
+      <span class="input-description">Number of confirming signals needed before entering a trade</span>
+      <div class="input-wrapper">
+        <i class="fas fa-signal input-icon"></i>
+        <input 
+          type="number" 
+          id="requiredSignals" 
+          min="1"
+          value="2"
+        >
+      </div>
+    </div>
+
+    <div class="input-field">
+      <label class="input-label">Timeframe Preference</label>
+      <span class="input-description">Chart timeframes to analyze - multiple selections allowed</span>
+      <div class="input-wrapper">
+        <i class="fas fa-clock input-icon"></i>
+        <select id="timeframePreference" multiple>
+          <option value="1m">1 Minute</option>
+          <option value="5m">5 Minutes</option>
+          <option value="15m">15 Minutes</option>
+          <option value="1h" selected>1 Hour</option>
+          <option value="4h" selected>4 Hours</option>
+          <option value="1d" selected>1 Day</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="input-field">
+      <label class="input-label">Pattern Weight</label>
+      <span class="input-description">How much importance to give to chart patterns in analysis (0-1)</span>
+      <div class="input-wrapper">
+        <i class="fas fa-wave-square input-icon"></i>
+        <input 
+          type="number" 
+          id="patternWeight" 
+          min="0"
+          max="1"
+          step="0.1"
+          value="0.4"
+        >
+      </div>
+    </div>
+
+    <div class="input-field">
+      <label class="input-label">Indicator Weight</label>
+      <span class="input-description">How much importance to give to technical indicators in analysis (0-1)</span>
+      <div class="input-wrapper">
+        <i class="fas fa-chart-pie input-icon"></i>
+        <input 
+          type="number" 
+          id="indicatorWeight" 
+          min="0"
+          max="1"
+          step="0.1"
+          value="0.6"
+        >
+      </div>
+    </div>
+  </div>
+
+  <button class="save-button" id="saveSettings">
+    <i class="fas fa-save"></i>
+    <span>Save Settings</span>
+  </button>
+
+  <script src="settings.js"></script>
 </body>
 </html>
+
