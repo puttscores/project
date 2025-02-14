@@ -1,13 +1,13 @@
 {
   "manifest_version": 3,
-  "name": "AI Trading Assistant",
-  "version": "1.0",
-  "description": "AI-powered trading analysis and execution",
+  "name": "Workbird",
+  "version": "1.0.0",
+  "description": "Your auto AI-powered trading platoform",
   "permissions": [
-    "activeTab",
     "storage",
+    "activeTab",
     "tabs",
-    "scripting"
+    "notifications"
   ],
   "action": {
     "default_popup": "popup.html"
@@ -16,8 +16,21 @@
     "service_worker": "background.js",
     "type": "module"
   },
-  "content_scripts": [{
-    "matches": ["<all_urls>"],
-    "js": ["content.js"]
-  }]
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ],
+  "host_permissions": [
+    "https://openrouter.ai/*",
+    "https://paper-api.alpaca.markets/*",
+    "<all_urls>"
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["assets/*"],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }

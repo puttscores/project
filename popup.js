@@ -49,6 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
+    technicalSignals.innerHTML = '';
     signals.indicators.forEach(indicator => {
       const signalDiv = document.createElement('div');
       signalDiv.className = 'indicator-item';
@@ -500,19 +501,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Settings panel handlers
   settingsButton.addEventListener('click', () => {
-    settingsOverlay.classList.add('visible');
+    document.documentElement.classList.add('dark');
     settingsOverlay.removeAttribute('inert');
+    requestAnimationFrame(() => {
+      settingsOverlay.style.display = 'block';
+      // Force reflow
+      settingsOverlay.offsetHeight;
+      settingsOverlay.style.opacity = '1';
+      settingsOverlay.style.visibility = 'visible';
+    });
   });
 
   closeSettingsButton.addEventListener('click', () => {
-    settingsOverlay.classList.remove('visible');
-    settingsOverlay.setAttribute('inert', '');
+    settingsOverlay.style.opacity = '0';
+    settingsOverlay.style.visibility = 'hidden';
+    setTimeout(() => {
+      settingsOverlay.style.display = 'none';
+      settingsOverlay.setAttribute('inert', '');
+    }, 300);
   });
 
   settingsOverlay.addEventListener('click', (e) => {
     if (e.target === settingsOverlay) {
-      settingsOverlay.classList.remove('visible');
-      settingsOverlay.setAttribute('inert', '');
+      settingsOverlay.style.opacity = '0';
+      settingsOverlay.style.visibility = 'hidden';
+      setTimeout(() => {
+        settingsOverlay.style.display = 'none';
+        settingsOverlay.setAttribute('inert', '');
+      }, 300);
     }
   });
 
