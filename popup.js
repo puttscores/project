@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const statusText = document.querySelector('.status-text');
   const settingsButton = document.querySelector('.settings-button');
   const settingsOverlay = document.querySelector('.settings-overlay');
+  const detailsToggle = document.querySelector('.details-toggle');
   const closeSettingsButton = document.querySelector('.close-settings');
 
   // Initialize state
@@ -38,6 +39,17 @@ document.addEventListener('DOMContentLoaded', () => {
   chrome.storage.local.get(['autoTrading'], (result) => {
     autoTrading = result.autoTrading || false;
   });
+
+  // Handle details toggle
+  if (detailsToggle) {
+    const priceLevels = document.querySelector('.price-levels');
+    detailsToggle.addEventListener('click', () => {
+      priceLevels.classList.toggle('collapsed');
+      const icon = detailsToggle.querySelector('i');
+      icon.style.transform = priceLevels.classList.contains('collapsed') ? 
+        'rotate(0deg)' : 'rotate(180deg)';
+    });
+  }
 
   // Update technical signals display
   function updateTechnicalSignals(signals) {

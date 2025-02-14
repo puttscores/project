@@ -15,12 +15,12 @@
           <h1>Workbird</h1>
         </div>
         <div class="window-controls">
-          <button class="settings-button" title="Settings" aria-label="Open settings">
-            <i class="fas fa-cog"></i>
-          </button>
           <button id="toggleAnalysis" class="action-button" aria-label="Toggle Analysis">
             <span class="button-text">Start Analysis</span>
             <i class="fas fa-spinner fa-spin" style="display: none;" aria-hidden="true"></i>
+          </button>
+          <button class="settings-button" title="Settings" aria-label="Open settings">
+            <i class="fas fa-cog"></i>
           </button>
         </div>
       </div>
@@ -62,20 +62,27 @@
                 <div class="strength-fill" id="trendStrength" style="width: 75%"></div>
               </div>
             </div>
-          </div>
+          <div class="details-section">
+            <button class="details-toggle">
+              <span>View Details</span>
+              <i class="fas fa-chevron-down"></i>
+            </button>
+            </div>
 
-          <div class="price-levels">
+          <div class="price-levels collapsed">
+  
             <div class="level-item entry">
-              <span class="level-label">Entry Price</span>
-              <span class="level-value" id="entryPrice">$0.00</span>
-            </div>
-            <div class="level-item stop">
-              <span class="level-label">Stop Loss</span>
-              <span class="level-value" id="stopLoss">$0.00</span>
-            </div>
-            <div class="level-item target">
-              <span class="level-label">Take Profit</span>
-              <span class="level-value" id="takeProfit">$0.00</span>
+                <span class="level-label">Entry Price</span>
+                <span class="level-value" id="entryPrice">$0.00</span>
+              </div>
+              <div class="level-item stop">
+                <span class="level-label">Stop Loss</span>
+                <span class="level-value" id="stopLoss">$0.00</span>
+              </div>
+              <div class="level-item target">
+                <span class="level-label">Take Profit</span>
+                <span class="level-value" id="takeProfit">$0.00</span>
+              </div>
             </div>
           </div>
 

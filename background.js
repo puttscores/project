@@ -1,4 +1,5 @@
 let screenshotInterval;
+let activeTabId = null;
 let analysisInterval = 60000; // Default to 1 minute
 let lastScreenshotData = null;
 let openrouterApiKey = '';
@@ -44,10 +45,21 @@ chrome.storage.local.get([
   }
 });
 
+// Track active tab changes
+chrome.tabs.onActivated.addListener((activeInfo) => {
+  activeTabId = activeInfo.tabId;
+  console.log('Active tab changed:', activeTabId);
+});
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   (async () => {
+    console.log('Received message:', request);
     try {
       if (request.type === 'startAnalysis') {
+        if (request.model) {
+          selectedModel = request.model;
+          console.log('Using model:', selectedModel);
+        }
         await startScreenshotCapture();
         sendResponse({ status: 'started' });
       } else if (request.type === 'stopAnalysis') {
@@ -123,6 +135,7 @@ async function startScreenshotCapture() {
   }
 
   console.log('Starting analysis with model:', selectedModel);
+  console.log('Analysis interval:', analysisInterval);
   isAnalyzing = true;
   screenshotInterval = setInterval(async () => {
     if (!isAnalyzing) {
@@ -132,10 +145,27 @@ async function startScreenshotCapture() {
     }
 
     try {
-      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-      if (!tab) return;
+      // Get all windows to find the trading chart window
+      const windows = await chrome.windows.getAll({ populate: true });
+      console.log('Found windows:', windows.length);
 
-      const screenshot = await chrome.tabs.captureVisibleTab();
+      // Get the active tab from all windows
+      let targetTab = null;
+      for (const window of windows) {
+        const tabs = await chrome.tabs.query({ active: true, windowId: window.id });
+        if (tabs.length > 0) {
+          targetTab = tabs[0];
+          break;
+        }
+      }
+
+      if (!targetTab) return;
+
+      console.log('Capturing screenshot of tab:', targetTab.id);
+      console.log('Window ID:', targetTab.windowId);
+      const screenshot = await chrome.tabs.captureVisibleTab(targetTab.windowId, {
+        format: 'png'
+      });
       if (isAnalyzing) {
         await analyzeScreenshot(screenshot);
       }
