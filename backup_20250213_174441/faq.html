@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ - Workbird Trading Assistant</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav>
+        <div class="nav-content">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                <a href="index.html">Workbird</a>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="getting-started.html">Getting Started</a>
+                <a href="#" class="download-btn" id="downloadBtn">
+                    <i class="fas fa-download"></i>
+                    Download Extension
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="faq-page">
+        <div class="container">
+            <h1>Frequently Asked Questions</h1>
+            <p class="section-subtitle">Everything you need to know about Workbird</p>
+
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <h3><i class="fas fa-chart-line"></i> Which charting platforms are supported?</h3>
+                    <p>Workbird works with any real-time chart platform accessible through your browser. This includes:</p>
+                    <ul>
+                        <li>TradingView (Free or Premium)</li>
+                        <li>Yahoo Finance Charts</li>
+                        <li>Alpaca Markets Charts</li>
+                        <li>Any other web-based charting platform</li>
+                    </ul>
+                    <p>Simply open your preferred charting platform in Chrome, and Workbird will automatically start analyzing the price action in real-time.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3><i class="fas fa-key"></i> What API keys do I need?</h3>
+                    <p>You'll need two API keys to get started:</p>
+                    <ul>
+                        <li>OpenRouter API key for AI analysis</li>
+                        <li>Alpaca Markets API key for trade execution</li>
+                    </ul>
+                    <p>Both platforms offer free tiers that are perfect for getting started. Check our Getting Started guide for detailed setup instructions.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3><i class="fas fa-robot"></i> How does the AI analysis work?</h3>
+                    <p>Workbird uses OpenRouter's state-of-the-art language models to:</p>
+                    <ul>
+                        <li>Analyze real-time price action and patterns</li>
+                        <li>Evaluate technical indicators</li>
+                        <li>Identify potential trading opportunities</li>
+                        <li>Calculate optimal entry and exit points</li>
+                    </ul>
+                    <p>The AI continuously learns and adapts to market conditions while following strict risk management rules.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3><i class="fas fa-shield-alt"></i> Is paper trading supported?</h3>
+                    <p>Yes! We strongly recommend starting with paper trading. Simply use your Alpaca paper trading API keys instead of live trading keys. This allows you to:</p>
+                    <ul>
+                        <li>Practice with real market data</li>
+                        <li>Test strategies risk-free</li>
+                        <li>Understand the platform's features</li>
+                        <li>Build confidence before live trading</li>
+                    </ul>
+                </div>
+
+                <div class="faq-item">
+                    <h3><i class="fas fa-code"></i> Can I customize the trading logic?</h3>
+                    <p>Absolutely! As an open-source project, Workbird is fully customizable:</p>
+                    <ul>
+                        <li>Modify risk management parameters</li>
+                        <li>Add custom technical indicators</li>
+                        <li>Implement your own trading strategies</li>
+                        <li>Contribute improvements to the community</li>
+                    </ul>
+                </div>
+
+                <div class="faq-item">
+                    <h3><i class="fas fa-clock"></i> What are the system requirements?</h3>
+                    <p>Workbird is lightweight and runs in Chrome:</p>
+                    <ul>
+                        <li>Google Chrome browser</li>
+                        <li>Internet connection for real-time data</li>
+                        <li>API keys for OpenRouter and Alpaca</li>
+                        <li>No additional software needed</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="still-have-questions">
+                <h2>Still have questions?</h2>
+                <p>Check out our <a href="https://github.com/yourusername/workbird/discussions" target="_blank">GitHub Discussions</a> or join our community to get help.</p>
+                <div class="cta-buttons">
+                    <a href="getting-started.html" class="primary-btn">Get Started</a>
+                    <a href="https://github.com/yourusername/workbird" class="secondary-btn">View on GitHub</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <i class="fas fa-chart-line"></i>
+                <span>Workbird</span>
+            </div>
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="getting-started.html">Getting Started</a>
+                <a href="faq.html">FAQ</a>
+                <a href="#" id="downloadFooter">Download</a>
+            </div>
+            <div class="disclaimer">
+                <p><strong>Disclaimer:</strong> Workbird is not an investment advisor. The information provided by this extension is for educational and entertainment purposes only. Users should avoid using this tool in real trading and stick to paper trading mode. Workbird is not liable for any financial losses incurred in the market. Trading involves substantial risk and may not be suitable for all investors.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function downloadProject() {
+            const link = document.createElement('a');
+            link.href = 'workbird.zip';
+            link.download = 'workbird.zip';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        document.getElementById('downloadBtn').addEventListener('click', downloadProject);
+        document.getElementById('downloadFooter').addEventListener('click', downloadProject);
+    </script>
+</body>
+</html>

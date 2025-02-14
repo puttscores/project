@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Getting Started - Workbird</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav>
+        <div class="nav-content">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                <a href="index.html">Workbird</a>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="index.html#faq">FAQ</a>
+                <a href="#" class="download-btn" id="downloadBtn">
+                    <i class="fas fa-download"></i>
+                    Download Extension
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="getting-started">
+        <div class="container">
+            <h1>Getting Started with Workbird</h1>
+            <p class="section-subtitle">Follow these simple steps to start trading smarter</p>
+
+            <div class="setup-steps">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h2>Get Your API Keys</h2>
+                    
+                    <div class="api-section">
+                        <h3><i class="fas fa-robot"></i> OpenRouter API Key</h3>
+                        <ol>
+                            <li>Visit <a href="https://openrouter.ai/" target="_blank">OpenRouter.ai</a></li>
+                            <li>Create an account or sign in</li>
+                            <li>Navigate to the API section</li>
+                            <li>Generate a new API key</li>
+                            <li>Copy and save your API key securely</li>
+                        </ol>
+                    </div>
+
+                    <div class="api-section">
+                        <h3><i class="fas fa-chart-line"></i> Alpaca Trading Account</h3>
+                        <ol>
+                            <li>Go to <a href="https://app.alpaca.markets/signup" target="_blank">Alpaca Markets</a></li>
+                            <li>Sign up for a paper trading account</li>
+                            <li>Once registered, go to your Dashboard</li>
+                            <li>Find your API Keys section</li>
+                            <li>Copy both your API Key ID and Secret Key</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h2>Install the Extension</h2>
+                    <ol>
+                        <li>Download the Workbird extension package</li>
+                        <li>Unzip the downloaded file</li>
+                        <li>Open Chrome and go to chrome://extensions/</li>
+                        <li>Enable "Developer mode" in the top right</li>
+                        <li>Click "Load unpacked" and select the unzipped folder</li>
+                        <li>The Workbird icon should appear in your Chrome toolbar</li>
+                    </ol>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h2>Configure the Extension</h2>
+                    <ol>
+                        <li>Click the Workbird icon in your Chrome toolbar</li>
+                        <li>Click the settings icon (⚙️)</li>
+                        <li>Enter your OpenRouter API key</li>
+                        <li>Enter your Alpaca API Key ID and Secret Key</li>
+                        <li>Save your settings</li>
+                    </ol>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">4</div>
+                    <h2>Start Trading</h2>
+                    <ol>
+                        <li>Open your preferred trading chart (TradingView, Yahoo Finance, etc.)</li>
+                        <li>Click the Workbird icon to open the extension</li>
+                        <li>Click "Start Trading" to begin analysis</li>
+                        <li>Wait for trading opportunities to appear</li>
+                        <li>Review and confirm trades before execution</li>
+                    </ol>
+                    <div class="warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Important: Start with paper trading to familiarize yourself with the system. Real trading involves substantial risk of loss.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="next-steps">
+                <h2>Ready to Start?</h2>
+                <p>Download Workbird now and start trading smarter with AI-powered analysis.</p>
+                <div class="cta-buttons">
+                    <a href="#" class="primary-btn" id="downloadBtnBottom">
+                        <i class="fas fa-download"></i>
+                        Download Extension
+                    </a>
+                    <a href="index.html#faq" class="secondary-btn">Read FAQ</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <i class="fas fa-chart-line"></i>
+                <span>Workbird</span>
+            </div>
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="index.html#features">Features</a>
+                <a href="index.html#faq">FAQ</a>
+                <a href="#" id="downloadFooter">Download</a>
+            </div>
+            <div class="disclaimer">
+                <p><strong>Disclaimer:</strong> Workbird is not an investment advisor. The information provided by this extension is for educational and entertainment purposes only. Users should avoid using this tool in real trading and stick to paper trading mode. Workbird is not liable for any financial losses incurred in the market. Trading involves substantial risk and may not be suitable for all investors.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function downloadProject() {
+            const link = document.createElement('a');
+            link.href = 'workbird.zip';
+            link.download = 'workbird.zip';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        document.getElementById('downloadBtn').addEventListener('click', downloadProject);
+        document.getElementById('downloadBtnBottom').addEventListener('click', downloadProject);
+        document.getElementById('downloadFooter').addEventListener('click', downloadProject);
+    </script>
+</body>
+</html>

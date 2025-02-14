@@ -42,7 +42,6 @@
           <div class="strategy-title">
             <h2>Trading Opportunity</h2>
             <span class="strategy-type" id="strategyType">Pattern Recognition</span>
-            <span class="last-updated" id="lastUpdated">Last updated: Just now</span>
           </div>
           <div class="confidence-score">
             <div class="score-label">Confidence</div>
@@ -82,12 +81,10 @@
           <div class="profit-risk">
             <div class="metric">
               <span class="metric-label">Potential Profit</span>
-              <span class="metric-shares" id="shareQty">-- shares</span>
               <span class="metric-value profit" id="potentialProfit">--</span>
             </div>
             <div class="metric">
               <span class="metric-label">Risk/Reward</span>
-              <span class="metric-shares" id="dollarAmount">$--</span>
               <span class="metric-value" id="riskReward">--</span>
             </div>
           </div>
@@ -111,7 +108,7 @@
   </div>
 
   <!-- Settings Panel -->
-  <div class="settings-overlay" inert>
+  <div class="settings-overlay" aria-hidden="true">
     <div class="settings-container">
       <div class="settings-header">
         <h2>Settings</h2>

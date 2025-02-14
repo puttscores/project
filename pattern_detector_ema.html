@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pine Script - Pattern Detector & EMA</title>
+    <style>
+        body {
+            font-family: monospace;
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .code-container {
+            position: relative;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        pre {
+            white-space: pre-wrap;
+            margin: 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 8px 16px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .copy-btn:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="code-container">
+        <button class="copy-btn" onclick="copyCode()">Copy Code</button>
+        <pre id="pineScript">//@version=5
+indicator("Pattern Detector & EMA", overlay=true)
+
+// EMA Indicators
+shortest = ta.ema(close, 20)
+short = ta.ema(close, 50)
+longer = ta.ema(close, 100)
+longest = ta.ema(close, 200)
+
+plot(shortest, color=color.red, title="EMA 20")
+plot(short, color=color.orange, title="EMA 50")
+plot(longer, color=color.aqua, title="EMA 100")
+plot(longest, color=color.blue, title="EMA 200")
+
+// Add labels for EMA lines
+label.new(bar_index, shortest, "EMA 20", color=color.red, textcolor=color.white, size=size.small, yloc=yloc.abovebar)
+label.new(bar_index, short, "EMA 50", color=color.orange, textcolor=color.white, size=size.small, yloc=yloc.abovebar)
+label.new(bar_index, longer, "EMA 100", color=color.aqua, textcolor=color.white, size=size.small, yloc=yloc.abovebar)
+label.new(bar_index, longest, "EMA 200", color=color.blue, textcolor=color.white, size=size.small, yloc=yloc.abovebar)
+
+// Function to detect a bullish flag
+bullishFlagDetection() =>
+    flagPole = ta.highest(close, 20) - ta.lowest(close, 20) > ta.atr(20) * 2
+    flagConsolidation = ta.highest(close, 5) - ta.lowest(close, 5) < ta.atr(5)
+    flagBreakout = close > ta.highest(close[1], 5)
+    flagPole and flagConsolidation and flagBreakout
+
+// Function to detect a bearish flag
+bearishFlagDetection() =>
+    flagPole = ta.highest(close, 20) - ta.lowest(close, 20) > ta.atr(20) * 2
+    flagConsolidation = ta.highest(close, 5) - ta.lowest(close, 5) < ta.atr(5)
+    flagBreakdown = close < ta.lowest(close[1], 5)
+    flagPole and flagConsolidation and flagBreakdown
+
+// Function to detect Cup and Handle pattern
+cupAndHandleDetection() =>
+    leftCup = ta.lowest(close, 30)
+    handleFormation = ta.highest(close, 10) - ta.lowest(close, 10) < ta.atr(10)
+    breakout = close > ta.highest(close[1], 10)
+    close == leftCup and handleFormation and breakout
+
+// Function to detect Head and Shoulders
+headAndShouldersDetection() =>
+    leftShoulder = ta.highest(close, 10)
+    head = ta.highest(close, 20)
+    rightShoulder = ta.highest(close, 10)
+    neckline = ta.lowest(close, 10)
+    close < neckline and leftShoulder < head and rightShoulder < head
+
+// Function to detect Rising Wedge
+risingWedgeDetection() =>
+    trendUp = ta.highest(close, 20) > ta.highest(close[1], 20)
+    narrowingRange = ta.highest(close, 10) - ta.lowest(close, 10) < ta.atr(10)
+    trendUp and narrowingRange
+
+// Function to detect Falling Wedge
+fallingWedgeDetection() =>
+    trendDown = ta.lowest(close, 20) < ta.lowest(close[1], 20)
+    narrowingRange = ta.highest(close, 10) - ta.lowest(close, 10) < ta.atr(10)
+    trendDown and narrowingRange
+
+// Detect patterns
+bullFlag = bullishFlagDetection()
+bearFlag = bearishFlagDetection()
+cupHandle = cupAndHandleDetection()
+headShoulders = headAndShouldersDetection()
+risingWedge = risingWedgeDetection()
+fallingWedge = fallingWedgeDetection()
+
+// Plot signals on chart
+if bullFlag
+    label.new(bar_index, high, "Bullish Flag", color=color.green, textcolor=color.white, size=size.small, yloc=yloc.abovebar)
+if bearFlag
+    label.new(bar_index, low, "Bearish Flag", color=color.red, textcolor=color.white, size=size.small, yloc=yloc.belowbar)
+if cupHandle
+    label.new(bar_index, high, "Cup & Handle", color=color.blue, textcolor=color.white, size=size.small, yloc=yloc.abovebar)
+if headShoulders
+    label.new(bar_index, high, "Head & Shoulders", color=color.purple, textcolor=color.white, size=size.small, yloc=yloc.abovebar)
+if risingWedge
+    label.new(bar_index, high, "Rising Wedge", color=color.green, textcolor=color.white, size=size.small, yloc=yloc.abovebar)
+if fallingWedge
+    label.new(bar_index, low, "Falling Wedge", color=color.orange, textcolor=color.white, size=size.small, yloc=yloc.belowbar)</pre>
+    </div>
+
+    <script>
+        function copyCode() {
+            const codeElement = document.getElementById('pineScript');
+            const textArea = document.createElement('textarea');
+            textArea.value = codeElement.textContent;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            
+            const button = document.querySelector('.copy-btn');
+            button.textContent = 'Copied!';
+            setTimeout(() => {
+                button.textContent = 'Copy Code';
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
