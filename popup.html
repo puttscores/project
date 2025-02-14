@@ -37,6 +37,20 @@
     </div>
 
     <div class="main-content">
+      <div class="intro-panel" id="introPanel">
+        <h2 class="intro-title"></h2>
+        <p class="intro-content"></p>
+        <p class="intro-subtext"></p>
+        <ul class="intro-items"></ul>
+        <div class="intro-controls">
+          <button class="intro-prev" style="display: none;">
+            <i class="fas fa-arrow-left"></i> Previous
+          </button>
+          <button class="intro-next">
+            Next <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
       <div class="strategy-panel" id="strategyPanel">
         <div class="strategy-header">
           <div class="strategy-title">
@@ -52,16 +66,6 @@
 
         <div class="strategy-content">
           <div class="market-sentiment">
-            <div class="sentiment-indicator">
-              <i class="fas fa-trending-up"></i>
-              <span id="trendDirection">Bullish</span>
-            </div>
-            <div class="strength-meter">
-              <div class="strength-label">Trend Strength</div>
-              <div class="strength-bar">
-                <div class="strength-fill" id="trendStrength" style="width: 75%"></div>
-              </div>
-            </div>
           <div class="details-section">
             <button class="details-toggle">
               <span>View Details</span>

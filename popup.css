@@ -96,21 +96,6 @@ body {
   border-color: var(--accent-primary);
 }
 
-.details-toggle i {
-  transition: transform 0.3s ease;
-}
-
-.details-toggle:not(.collapsed) i {
-  transform: rotate(180deg);
-}
-
-.strategy-panel {
-  margin-bottom: 16px;
-}
-
-.analysis-indicators {
-  margin-top: 16px;
-}
 #toggleAnalysis {
   height: 32px;
   padding: 0 16px;
@@ -143,11 +128,9 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 6px 8px;
-  background: var(--bg-tertiary);
-  border-radius: 4px;
+  padding: 6px 0;
   font-size: 12px;
-  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
 }
 
 .status-indicator, .market-status {
@@ -174,6 +157,7 @@ body {
   border-radius: 6px;
   border: 1px solid var(--border-color);
   overflow: hidden;
+  margin-bottom: 16px;
 }
 
 .strategy-header {
@@ -223,37 +207,134 @@ body {
   margin-bottom: 10px;
 }
 
-.sentiment-indicator {
+/* Intro Panel */
+.intro-panel {
+  background: var(--bg-secondary);
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  padding: 16px;
+  margin-bottom: 16px;
+  display: none;
+}
+
+.intro-panel.visible {
+  display: block;
+}
+
+.terms-link {
+  margin-top: 16px !important;
+  padding-top: 16px !important;
+  border-top: 1px solid var(--border-color);
+}
+
+.terms-link a {
+  color: var(--accent-primary);
+  text-decoration: none;
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-bottom: 6px;
+  transition: color 0.2s ease;
 }
 
-.strength-meter {
-  background: var(--bg-tertiary);
-  border-radius: 4px;
-  padding: 6px;
+.terms-link a:hover {
+  color: var(--text-primary);
 }
 
-.strength-label {
-  font-size: 11px;
+.intro-panel.visible ~ .strategy-panel,
+.intro-panel.visible ~ .analysis-indicators {
+  display: none;
+}
+
+.intro-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 12px 0;
+  color: var(--text-primary);
+}
+
+.intro-content {
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0 0 12px 0;
+  color: var(--text-primary);
+}
+
+.intro-subtext {
+  font-size: 13px;
   color: var(--text-secondary);
-  margin-bottom: 4px;
+  margin: 0 0 12px 0;
+  font-style: italic;
 }
 
-.strength-bar {
-  height: 4px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 2px;
-  overflow: hidden;
+.intro-items {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 16px 0;
 }
 
-.strength-fill {
-  height: 100%;
+.intro-items li {
+  padding-left: 20px;
+  position: relative;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+}
+
+.intro-items li:before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: var(--accent-primary);
+}
+
+.intro-controls {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.intro-controls button {
+  padding: 8px 16px;
+  border-radius: 4px;
   background: var(--accent-primary);
-  border-radius: 2px;
-  transition: width 0.3s ease;
+  color: white;
+  border: none;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.intro-controls button:hover {
+  filter: brightness(110%);
+  transform: translateY(-1px);
+}
+
+.intro-controls button i {
+  font-size: 12px;
+}
+
+.details-toggle {
+  width: 100%;
+  padding: 8px 0;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.details-toggle:hover {
+  color: var(--text-primary);
+}
+
+.details-toggle i {
+  transition: transform 0.3s ease;
 }
 
 .price-levels {
@@ -273,32 +354,6 @@ body {
   opacity: 0;
   pointer-events: none;
 }
-
-
-.details-section {
-  margin: 16px 0;
-}
-
-.details-toggle {
-  width: 100%;
-  padding: 8px 12px;
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  color: var(--text-secondary);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.details-toggle:hover {
-  background: var(--bg-secondary);
-  color: var(--text-primary);
-  border-color: var(--accent-primary);
-}
-
 
 .level-item {
   background: var(--bg-tertiary);
@@ -383,6 +438,7 @@ body {
   border-radius: 6px;
   padding: 10px;
   border: 1px solid var(--border-color);
+  margin-top: 16px;
 }
 
 .indicator-group h3 {

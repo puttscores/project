@@ -1,4 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
+  // Intro panel elements
+  const introPanel = document.getElementById('introPanel');
+  const introTitle = document.querySelector('.intro-title');
+  const introContent = document.querySelector('.intro-content');
+  const introSubtext = document.querySelector('.intro-subtext');
+  const introItems = document.querySelector('.intro-items');
+  const introPrev = document.querySelector('.intro-prev');
+  const introNext = document.querySelector('.intro-next');
+
   // Strategy panel elements
   const strategyPanel = document.getElementById('strategyPanel');
   const confidenceScore = document.getElementById('confidenceScore');
@@ -7,8 +16,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const stopLoss = document.getElementById('stopLoss');
   const takeProfit = document.getElementById('takeProfit');
   const executeTradeBtn = document.getElementById('executeTrade');
-  const trendDirection = document.getElementById('trendDirection');
-  const trendStrength = document.getElementById('trendStrength');
   const riskReward = document.getElementById('riskReward');
   const strategyType = document.getElementById('strategyType');
   const lastUpdated = document.getElementById('lastUpdated');
@@ -31,9 +38,117 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize state
   let isAnalyzing = false;
   let autoTrading = false;
+  let currentStep = 0;
+
   if (buttonText) {
     buttonText.textContent = 'Start Trading';
   }
+
+  // Intro steps data
+  const introSteps = [
+    {
+      title: "Welcome to Workbird AI Trading",
+      content: "Where AI meets trading, making complex decisions simple! 🚀",
+      subtext: "Our goal is to make trading as simple as pressing a button while maintaining educational value."
+    },
+    {
+      title: "Important Tips",
+      content: "Before you start, please note:",
+      items: [
+        "You can only monitor one stock at a time",
+        "Keep other Chrome tabs closed during analysis",
+        "Risk parameters can be customized in settings",
+        "OpenRouter & Alpaca API keys are required"
+      ]
+    },
+    {
+      title: "About Workbird",
+      content: "Workbird was created to simplify trading through AI-powered analysis, making complex market decisions more accessible.",
+      subtext: "We believe trading shouldn't require a PhD in finance!"
+    },
+    {
+      title: "Important Disclaimer",
+      content: "Please read and acknowledge:",
+      items: [
+        "Workbird is for educational and entertainment purposes only",
+        "Not a financial advisor - no professional advice given",
+        "Real money trading is not recommended",
+        "All trading carries significant risks"
+      ]
+    },
+    {
+      title: "Terms of Service",
+      content: "By continuing, you agree to:",
+      items: [
+        "Workbird Terms of Service",
+        "Privacy Policy",
+        "Use for educational purposes only",
+        "Accept all trading risks"
+      ],
+      hasLink: true,
+      linkText: "View Terms of Service"
+    }
+  ];
+
+  // Initialize intro panel
+  function showIntroPanel() {
+    introPanel.classList.add('visible');
+    updateIntroStep();
+  }
+
+  // Check if first time opening
+  chrome.storage.local.get(['introShown'], (result) => {
+    if (!result.introShown) {
+      showIntroPanel();
+    }
+  });
+
+  // Update intro step content
+  function updateIntroStep() {
+    const step = introSteps[currentStep];
+    introTitle.textContent = step.title;
+    introContent.textContent = step.content;
+    
+    if (step.subtext) {
+      introSubtext.textContent = step.subtext;
+      introSubtext.style.display = 'block';
+    } else {
+      introSubtext.style.display = 'none';
+    }
+
+    if (step.items) {
+      introItems.innerHTML = step.items.map(item => `<li>${item}</li>`).join('');
+      if (step.hasLink) {
+        introItems.innerHTML += `
+          <li class="terms-link"><a href="terms.html" target="_blank">${step.linkText}</a></li>
+        `;
+      }
+      introItems.style.display = 'block';
+    } else {
+      introItems.style.display = 'none';
+    }
+
+    introPrev.style.display = currentStep > 0 ? 'flex' : 'none';
+    introNext.textContent = currentStep < introSteps.length - 1 ? 'Next' : 'Get Started';
+  }
+
+  // Handle intro navigation
+  introPrev?.addEventListener('click', () => {
+    if (currentStep > 0) {
+      currentStep--;
+      updateIntroStep();
+    }
+  });
+
+  introNext?.addEventListener('click', () => {
+    if (currentStep < introSteps.length - 1) {
+      currentStep++;
+      updateIntroStep();
+    } else {
+      chrome.storage.local.set({ introShown: true });
+      introPanel.classList.remove('visible');
+    }
+  });
 
   // Load auto-trading setting
   chrome.storage.local.get(['autoTrading'], (result) => {
@@ -61,7 +176,6 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    technicalSignals.innerHTML = '';
     signals.indicators.forEach(indicator => {
       const signalDiv = document.createElement('div');
       signalDiv.className = 'indicator-item';
@@ -137,20 +251,6 @@ document.addEventListener('DOMContentLoaded', () => {
     executeTradeBtn.disabled = !autoTrading;
 
     return true;
-  }
-
-  // Update trend information
-  function updateTrendInfo(trend) {
-    console.log('Updating trend info:', trend);
-    if (!trend) {
-      console.log('No trend data provided');
-      return;
-    }
-
-    const direction = trend.direction.toLowerCase();
-    trendDirection.textContent = direction === 'up' ? 'Bullish' : 'Bearish';
-    trendDirection.className = direction === 'up' ? 'bullish' : 'bearish';
-    trendStrength.style.width = `${trend.strength}%`;
   }
 
   // Check API keys and update UI
@@ -262,36 +362,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return match ? parseInt(match[1]) : 50;
       }
 
-      function extractTrendInfo(text) {
-        const isBearish = text.toLowerCase().includes('bearish') || text.toLowerCase().includes('downtrend');
-        const isBullish = text.toLowerCase().includes('bullish') || text.toLowerCase().includes('uptrend');
-        return {
-          direction: isBearish ? 'bearish' : isBullish ? 'bullish' : 'neutral',
-          strength: extractConfidenceLevel(text)
-        };
-      }
-
-      function extractIndicators(text) {
-        const indicators = [];
-        const sections = text.split(/\n[+*-]\s+/);
-        
-        sections.forEach(section => {
-          if (section.includes('Moving Average') || 
-              section.includes('RSI') || 
-              section.includes('MACD') || 
-              section.includes('Bollinger')) {
-            const signal = section.toLowerCase().includes('bullish') ? 'buy' :
-                          section.toLowerCase().includes('bearish') ? 'sell' : 'neutral';
-            indicators.push({
-              name: section.split(':')[0].trim(),
-              signal: signal,
-              weight: extractConfidenceLevel(section)
-            });
-          }
-        });
-        return indicators;
-      }
-
       try {
         let parsedResponse;
         if (typeof message.content === 'string') {
@@ -303,19 +373,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const jsonContent = JSON.parse(jsonMatch[1]);
             parsedResponse = {
               display: {
-                trend: {
-                  direction: jsonContent.primary_trend_direction.direction,
-                  strength: jsonContent.primary_trend_direction.confidence,
-                  key_levels: {
-                    support: [jsonContent.key_support_resistance_levels.support],
-                    resistance: [jsonContent.key_support_resistance_levels.resistance],
-                    explanation: "Levels from analysis"
-                  }
-                },
-                patterns: [{
-                  name: jsonContent.active_chart_patterns.pattern,
-                  confidence: jsonContent.active_chart_patterns.confidence
-                }],
                 signals: {
                   overall_sentiment: jsonContent.technical_indicator_signals.moving_averages.confidence,
                   indicators: [
@@ -336,87 +393,19 @@ document.addEventListener('DOMContentLoaded', () => {
               full: jsonContent,
               timestamp: new Date().toISOString()
             };
-          } else if (message.content.includes('**')) {
+          } else {
             // Handle pure markdown format
-            const trendSection = message.content.match(/Primary Trend Direction[^*]*(?=\*\*|$)/i)?.[0] || '';
-            const trend = extractTrendInfo(trendSection);
-            
             const analysis = {
               display: {
-                trend: {
-                  direction: trend.direction,
-                  strength: trend.strength,
-                  key_levels: {
-                    support: [],
-                    resistance: [],
-                    explanation: message.content.match(/Key Support\/Resistance Levels:(.*?)(?=\n\n)/s)?.[1]?.trim() || "No levels detected"
-                  }
-                },
-                patterns: [],
                 signals: {
                   overall_sentiment: extractConfidenceLevel(message.content),
-                  indicators: extractIndicators(message.content)
+                  indicators: []
                 }
               },
               full: message.content,
               timestamp: new Date().toISOString()
             };
             parsedResponse = analysis;
-          } else if (message.content.includes('<answervoice')) {
-            // Handle numbered list format with answervoice tag
-            const content = message.content.replace(/<answervoice.*?>/, '').trim();
-            
-            // Extract trend information from point 1
-            const trendMatch = content.match(/1\.\s*Primary trend direction:\s*(.*?)(?=\n|$)/i);
-            const trend = extractTrendInfo(trendMatch ? trendMatch[1] : '');
-            
-            // Extract support/resistance from point 2
-            const levelsMatch = content.match(/2\.\s*Key support\/resistance levels:\s*(.*?)(?=\n|$)/i);
-            const supportMatch = levelsMatch?.[1].match(/\$(\d+\.?\d*)/g) || [];
-            
-            // Extract pattern from point 3
-            const patternMatch = content.match(/3\.\s*Active chart patterns:\s*(.*?)(?=\n|$)/i);
-            
-            // Extract technical signals from point 4
-            const signalsMatch = content.match(/4\.\s*Technical indicator signals:\s*(.*?)(?=\n|$)/i);
-            
-            const analysis = {
-              display: {
-                trend: {
-                  direction: trend.direction,
-                  strength: trend.strength,
-                  key_levels: {
-                    support: supportMatch.map(price => parseFloat(price.replace('$', ''))),
-                    resistance: [],
-                    explanation: levelsMatch?.[1] || "No levels detected"
-                  }
-                },
-                patterns: patternMatch ? [{
-                  name: patternMatch[1].split('.')[0].trim(),
-                  confidence: 70 // Default confidence from the example
-                }] : [],
-                signals: {
-                  overall_sentiment: extractConfidenceLevel(content),
-                  indicators: [
-                    {
-                      name: "RSI",
-                      signal: "neutral",
-                      weight: 65
-                    },
-                    {
-                      name: "MACD",
-                      signal: "buy",
-                      weight: 65
-                    }
-                  ]
-                }
-              },
-              full: content,
-              timestamp: new Date().toISOString()
-            };
-            parsedResponse = analysis;
-          } else {
-            throw new Error('Unrecognized response format');
           }
         } else {
           parsedResponse = message.content;
@@ -425,13 +414,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (parsedResponse.display && parsedResponse.full) {
           const strategy = parsedResponse.full.recommended_trading_strategy;
           
-          // Always update trend and signals
-          if (parsedResponse.display?.trend) {
-            updateTrendInfo({
-              direction: parsedResponse.display.trend.direction,
-              strength: parsedResponse.display.trend.strength
-            });
-          }
+          // Always update signals
           if (parsedResponse.display?.signals?.indicators) {
             updateTechnicalSignals({
               indicators: parsedResponse.display.signals.indicators
